@@ -1,0 +1,136 @@
+#include <iostream>
+
+using namespace std;
+
+
+class Pizza{
+protected:
+    string name;
+    string description;
+    int SIZE;
+    int salt=0;
+    int cheas=0;
+public:
+    Pizza(string n, string desc, int siz){
+        name = n;
+        description = desc;
+        SIZE = siz;
+    }
+
+    virtual float price()= 0;
+    virtual void detail()= 0;
+    virtual void setING(int a)=0; //в особенности price,detail и setING хорошо демонстрируют полиморфизм с перегрузками
+    virtual float getCost() = 0;
+
+    void setName(string na){
+       name = na;
+    }
+    void setDesc(string desc){
+        description = desc;
+    }
+    void setSize(int s){
+        SIZE = s;
+    }
+
+};
+
+class Salted: public Pizza{
+private:
+    //int salt;
+    float cost=4;
+
+public:
+    Salted(string n="pizza", string desc="ingred", int siz=25, int qsalt=1,float cost = 4): Pizza(n,desc,siz){
+        salt = qsalt;
+        this->cost = cost;
+
+    }
+    float price() override{
+        cost = cost*(SIZE*0.04)*salt;
+        return (cost);
+    }
+
+    void detail() override{
+        cout<<"pizza's name -"<<this->name<<'\n'<<"description - "<<this->description<<'\n'<<"pizza's size - "<<SIZE<<'\n'<<"salt quantity -"<<salt<<'\n'<<"price - "<<cost<<'\n'<<endl;
+    }
+    void setING(int a) override{
+        salt = a;
+    }
+    float getCost() override{
+        return cost;
+    }
+};
+
+class Cheased: public Pizza{
+private:
+    //int salt;
+    float cost=6;
+
+public:
+    Cheased(string n="pizza", string desc="ingred", int siz=25, int qcheas=1,float cos = 6): Pizza(n,desc,siz){
+        cheas = qcheas;
+        this->cost = cos;
+
+    }
+    float price() override{
+        cost = cost*(SIZE*0.1)*cheas;
+        return (cost);
+    }
+
+    void detail() override{
+        cout<<"pizza's name -"<<this->name<<'\n'<<"description - "<<this->description<<'\n'<<"pizza's size - "<<SIZE<<'\n'<<"cheas quantity -"<<cheas<<'\n'<<"price - "<<cost<<'\n'<<endl;
+    }
+    void setING(int a) override{
+        cheas = a;
+    }
+    float getCost() override{
+        return cost;
+    }
+};
+
+void foo(int c){
+
+
+    Pizza *piz[c];
+    string namae;
+    string desc;
+    int si;
+    int qua;
+    for (int i = 0; i < c; i++){
+        cout<<"oreder #"<<i+1<<endl;
+        int j=0; cout<<"add salt - 0, add cheas - 1"<<endl; cin>>j;
+        {if (j==0) {
+           piz[i] = new Salted();
+           cout<<"name this pizza"<<endl;  cin>>namae; piz[i]->setName(namae);
+           cout<<"write some description"<<endl; cin>>desc; piz[i]->setDesc(desc);
+           cout<<"Size?"<<endl; cin>>si; piz[i]->setSize(si);
+           cout<<"How many salt?"<<endl; cin>>qua; piz[i]->setING(qua);
+           piz[i]->price();
+        }
+        else if (j==1){
+           piz[i] = new Cheased();
+           cout<<"name this pizza"<<endl; cin>>namae; piz[i]->setName(namae);
+           cout<<"write some description"<<endl; cin>>desc; piz[i]->setDesc(desc);
+           cout<<"Size?"<<endl; int si; cin>>si; piz[i]->setSize(si);
+           cout<<"How many cheas?"<<endl; cin>>qua; piz[i]->setING(qua);
+           piz[i]->price();
+        }}
+    }
+    cout<<endl<<"Your order is: "<<endl;
+    float total = 0.0;
+    for (int i = 0; i<c;i++){
+        piz[i]->detail();
+        total += piz[i]->getCost();
+    }
+    cout<<endl<<"Your total price is "<<total<<endl;
+
+}
+
+
+int main()
+{
+    cout<<"How many pizzas?"<<endl; //Количество пицц в заказе
+    int c; cin>>c;
+    foo(c);
+    return 0;
+}
